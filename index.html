@@ -227,6 +227,63 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
 
 /* TOAST */
 #toast { position: fixed; bottom: calc(80px + var(--safe-bot)); left: 50%; transform: translateX(-50%); background: #2C2C2E; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; display: none; z-index: 999; white-space: nowrap; }
+
+/* REFRESH BUTTON */
+.btn-refresh { background: none; border: none; cursor: pointer; padding: 4px 6px; display: flex; align-items: center; gap: 5px; font-size: 14px; color: var(--blue); font-weight: 500; }
+.btn-refresh svg { width: 18px; height: 18px; stroke: var(--blue); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.6s ease; }
+.btn-refresh.spinning svg { animation: spin 0.9s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* REFRESH OVERLAY */
+#refresh-overlay { position: fixed; top: 0; left: 0; right: 0; padding: calc(var(--safe-top) + 56px) 0 0; display: none; justify-content: center; z-index: 50; pointer-events: none; }
+#refresh-overlay.visible { display: flex; }
+.refresh-pill { background: var(--blue); color: #fff; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
+.refresh-pill svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; animation: spin 0.8s linear infinite; }
+
+/* LAST UPDATED */
+.last-updated { font-size: 11px; color: var(--text2); text-align: center; padding: 4px 0 10px; }
+
+/* ===== WIDGET SCREEN ===== */
+#s-widget { background: #0a0a18; }
+.wg-wallpaper { position: absolute; inset: 0; background: linear-gradient(160deg,#0d1b3e 0%,#0a0a18 60%); z-index: 0; pointer-events: none; }
+.wg-content { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 40px; overflow-y: auto; }
+.wg-status { display: flex; justify-content: space-between; padding: calc(var(--safe-top) + 4px) 24px 0; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); }
+.wg-time { text-align: center; padding: 20px 20px 6px; }
+.wg-time .wt { font-size: 72px; font-weight: 200; color: #fff; line-height: 1; letter-spacing: -2px; }
+.wg-time .wd { font-size: 16px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+.wg-back { background: rgba(255,255,255,0.15); border: none; border-radius: 20px; color: #fff; font-size: 13px; font-weight: 600; padding: 6px 14px; cursor: pointer; margin: 10px 16px 0; align-self: flex-start; }
+.wg-section { margin: 12px 16px 0; }
+.wg-card { background: rgba(255,255,255,0.12); border-radius: 20px; border: 0.5px solid rgba(255,255,255,0.18); overflow: hidden; }
+.wg-card-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 8px; }
+.wg-card-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.06em; }
+.wg-card-updated { font-size: 11px; color: rgba(255,255,255,0.4); }
+.wg-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-top: 0.5px solid rgba(255,255,255,0.08); }
+.wg-row-left { display: flex; align-items: center; gap: 10px; }
+.wg-icon { font-size: 15px; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.wg-name { font-size: 14px; font-weight: 600; color: #fff; }
+.wg-cat { font-size: 11px; color: rgba(255,255,255,0.45); }
+.wg-right { text-align: right; }
+.wg-price { font-size: 14px; font-weight: 700; color: #fff; }
+.wg-chg { font-size: 11px; font-weight: 600; }
+.wg-chg.up { color: #5DCAA5; }
+.wg-chg.down { color: #F0997B; }
+.wg-pl { font-size: 11px; font-weight: 700; margin-top: 1px; }
+.wg-pl.up { color: #5DCAA5; }
+.wg-pl.down { color: #F0997B; }
+.wg-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: rgba(255,255,255,0.08); }
+.wg-sum-cell { background: rgba(255,255,255,0.07); padding: 10px 12px; }
+.wg-sum-lbl { font-size: 10px; color: rgba(255,255,255,0.5); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+.wg-sum-val { font-size: 15px; font-weight: 700; color: #fff; }
+.wg-sum-val.up { color: #5DCAA5; }
+.wg-sum-val.down { color: #F0997B; }
+.wg-empty { padding: 20px; text-align: center; font-size: 13px; color: rgba(255,255,255,0.4); }
+.wg-hint { margin: 12px 16px 0; background: rgba(255,255,255,0.07); border-radius: 14px; padding: 12px 14px; }
+.wg-hint-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 4px; }
+.wg-hint-body { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.wg-open-btn { margin: 14px 16px 0; background: rgba(255,255,255,0.15); border: 0.5px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 13px; font-size: 15px; font-weight: 600; color: #fff; cursor: pointer; width: calc(100% - 32px); }
+.wg-refresh-btn { margin: 10px 16px 0; background: none; border: 0.5px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 10px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.65); cursor: pointer; width: calc(100% - 32px); display: flex; align-items: center; justify-content: center; gap: 8px; }
+.wg-refresh-btn svg { width: 14px; height: 14px; stroke: rgba(255,255,255,0.65); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.wg-refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
 </style>
 </head>
 <body>
@@ -253,8 +310,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
       <div class="status-spacer"></div>
       <div class="topbar" style="border-bottom:none;background:var(--bg)">
         <span class="topbar-title">📊 InvestTrack</span>
+        <button class="btn-refresh" id="refresh-btn-home" onclick="refreshPrices()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Actualiser
+        </button>
         <button class="btn-sm" onclick="goTo('admin')">+ Ajouter</button>
       </div>
+      <div class="last-updated" id="last-updated-home"></div>
       <div class="hero" id="hero">
         <div class="hero-lbl">Valeur totale du portefeuille</div>
         <div class="hero-val" id="h-total">— €</div>
@@ -277,7 +339,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
       <div class="topbar">
         <button class="back-btn" onclick="goTo('home')">‹</button>
         <span class="topbar-title" id="alist-title">Actifs</span>
+        <button class="btn-refresh" id="refresh-btn-assets" onclick="refreshPrices()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </button>
       </div>
+      <div class="last-updated" id="last-updated-assets"></div>
       <div class="asset-list" id="asset-list"></div>
     </div>
 
@@ -381,6 +447,37 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
       </div>
     </div>
 
+    <!-- WIDGET ÉCRAN VERROUILLAGE -->
+    <div class="screen" id="s-widget">
+      <div class="wg-wallpaper"></div>
+      <div class="wg-content">
+        <div class="wg-status"><span id="wg-clock">9:41</span><span>⬤⬤⬤</span></div>
+        <div class="wg-time"><div class="wt" id="wg-time-big">9:41</div><div class="wd" id="wg-date"></div></div>
+        <button class="wg-back" onclick="goTo('home')">‹ Retour</button>
+        <div class="wg-section">
+          <div class="wg-card" id="wg-favs-card">
+            <div class="wg-card-head">
+              <div class="wg-card-title">⭐ Mes favoris</div>
+              <div class="wg-card-updated" id="wg-updated"></div>
+            </div>
+            <div id="wg-rows"></div>
+          </div>
+        </div>
+        <div class="wg-section">
+          <div class="wg-card"><div class="wg-summary" id="wg-summary"></div></div>
+        </div>
+        <button class="wg-refresh-btn" id="wg-refresh-btn" onclick="wgRefresh()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Actualiser les cours
+        </button>
+        <div class="wg-hint" style="margin-top:14px">
+          <div class="wg-hint-title">📱 Installer sur votre écran d'accueil</div>
+          <div class="wg-hint-body"><strong>iPhone :</strong> Safari → icône Partager → "Sur l'écran d'accueil" → l'app s'ouvre directement sur cet écran.<br><br><strong>Android :</strong> Chrome → ⋮ → "Ajouter à l'écran d'accueil".</div>
+        </div>
+        <button class="wg-open-btn" onclick="goTo('favs')">Ouvrir mes favoris →</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- NAVBAR -->
@@ -401,9 +498,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
       <span class="nav-lbl">Admin</span>
     </button>
+    <button class="nav-item" id="ni-widget" onclick="goTo('widget')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <span class="nav-lbl">Widget</span>
+    </button>
   </nav>
 </div>
 <div id="toast"></div>
+<div id="refresh-overlay">
+  <div class="refresh-pill">
+    <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    Actualisation des cours…
+  </div>
+</div>
 
 <script>
 const USERS = { 'admin@investtrack.fr': 'admin1234', 'user@test.fr': 'test1234' };
@@ -416,7 +523,7 @@ const CAT_META = {
   'Matières premières': { icon: '🛢️', color: '#888780' }
 };
 
-let assets = [
+const DEFAULT_ASSETS = [
   { id:1, name:'Or', cat:'Métaux', icon:'🥇', api:'https://api.metals.live/v1/spot/gold', path:'price', cur:'USD', price:3224.50, change:0.82 },
   { id:2, name:'Argent', cat:'Métaux', icon:'🪙', api:'', path:'', cur:'USD', price:32.18, change:1.22 },
   { id:3, name:'Platine', cat:'Métaux', icon:'⚪', api:'', path:'', cur:'USD', price:982.40, change:-0.31 },
@@ -429,27 +536,62 @@ let assets = [
   { id:10, name:'OAT France 10 ans', cat:'Obligations', icon:'🏦', api:'', path:'', cur:'EUR', price:98.15, change:-0.05 },
 ];
 
+/* ========== PERSISTANCE localStorage ========== */
+function saveData() {
+  try {
+    localStorage.setItem('it_assets', JSON.stringify(assets));
+    localStorage.setItem('it_favorites', JSON.stringify([...favorites]));
+    localStorage.setItem('it_positions', JSON.stringify(positions));
+    localStorage.setItem('it_nextId', String(nextId));
+    localStorage.setItem('it_lastUpdated', lastUpdated ? lastUpdated.toISOString() : '');
+  } catch(e) {}
+}
+
+function loadData() {
+  try {
+    const a = localStorage.getItem('it_assets');
+    const f = localStorage.getItem('it_favorites');
+    const p = localStorage.getItem('it_positions');
+    const n = localStorage.getItem('it_nextId');
+    const lu = localStorage.getItem('it_lastUpdated');
+    if (a) assets = JSON.parse(a);
+    if (f) favorites = new Set(JSON.parse(f));
+    if (p) positions = JSON.parse(p);
+    if (n) nextId = parseInt(n) || 20;
+    if (lu) lastUpdated = lu ? new Date(lu) : null;
+  } catch(e) {}
+}
+
+/* ========== STATE ========== */
+let assets = JSON.parse(JSON.stringify(DEFAULT_ASSETS));
 let favorites = new Set([1, 5]);
 let positions = { 1: { buy: 1850, qty: 0.5 }, 5: { buy: 62000, qty: 0.1 } };
 let currentAsset = null;
 let currentCat = null;
 let lastCat = null;
 let nextId = 20;
+let isRefreshing = false;
+let lastUpdated = null;
 
+loadData();
+
+/* ========== UTILS ========== */
 function getPath(obj, path) {
   return path.split('.').reduce((o, k) => o && o[k] !== undefined ? o[k] : null, obj);
 }
-
 function fmt(n, cur, dec) {
   if (n === null || n === undefined) return '—';
   dec = dec !== undefined ? dec : 2;
   const sym = cur === 'USD' ? '$' : cur === 'GBP' ? '£' : '€';
   return sym + n.toLocaleString('fr-FR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
 }
-
 function fmtChg(c) {
   if (c === null || c === undefined) return '—';
   return (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
+}
+function fmtTime(d) {
+  if (!d) return '';
+  return 'Mis à jour à ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 }
 
 function calcPnL(asset) {
@@ -459,7 +601,6 @@ function calcPnL(asset) {
   const cost = pos.buy * pos.qty;
   return { cur, cost, pl: cur - cost, perf: ((cur - cost) / cost) * 100, qty: pos.qty };
 }
-
 function totalPortfolio() {
   let cur = 0, cost = 0, hasData = false;
   favorites.forEach(id => {
@@ -470,6 +611,28 @@ function totalPortfolio() {
   });
   if (!hasData) return null;
   return { cur, cost, pl: cur - cost, perf: ((cur - cost) / cost) * 100 };
+}
+
+/* ========== REFRESH ========== */
+function setRefreshingState(loading) {
+  isRefreshing = loading;
+  const overlay = document.getElementById('refresh-overlay');
+  const btns = document.querySelectorAll('.btn-refresh, .wg-refresh-btn');
+  if (loading) {
+    overlay.classList.add('visible');
+    btns.forEach(b => b.classList.add('spinning'));
+  } else {
+    overlay.classList.remove('visible');
+    btns.forEach(b => b.classList.remove('spinning'));
+    lastUpdated = new Date();
+    const txt = fmtTime(lastUpdated);
+    ['last-updated-home', 'last-updated-assets'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.textContent = txt;
+    });
+    const wu = document.getElementById('wg-updated');
+    if (wu) wu.textContent = txt;
+    saveData();
+  }
 }
 
 async function fetchPrice(asset) {
@@ -486,13 +649,30 @@ async function fetchPrice(asset) {
   } catch(e) {}
 }
 
-function loadPrices() {
-  Promise.allSettled(assets.filter(a => a.api).map(fetchPrice)).then(() => {
-    renderHome(); renderFavScroll();
-  });
+async function loadPrices() { await refreshPrices(); }
+
+async function refreshPrices() {
+  if (isRefreshing) return;
+  setRefreshingState(true);
+  await Promise.allSettled(assets.filter(a => a.api).map(fetchPrice));
+  setRefreshingState(false);
+  renderHome();
+  if (currentCat) renderAssetList(currentCat);
+  if (currentAsset) { currentAsset = assets.find(a => a.id === currentAsset.id); renderDetail(); }
+  renderWidget();
+  showToast('✓ Cours actualisés');
 }
 
-/* ========== RENDER ========== */
+async function wgRefresh() {
+  if (isRefreshing) return;
+  setRefreshingState(true);
+  await Promise.allSettled(assets.filter(a => a.api).map(fetchPrice));
+  setRefreshingState(false);
+  renderWidget();
+  showToast('✓ Cours actualisés');
+}
+
+/* ========== RENDER HOME ========== */
 function renderHome() {
   const tot = totalPortfolio();
   if (tot) {
@@ -512,11 +692,7 @@ function renderHome() {
 
 function renderFavScroll() {
   const el = document.getElementById('fav-scroll');
-  if (favorites.size === 0) {
-    el.innerHTML = '';
-    document.getElementById('fav-scroll').parentNode.insertAdjacentHTML('afterend', '');
-    return;
-  }
+  if (favorites.size === 0) { el.innerHTML = ''; return; }
   el.innerHTML = [...favorites].map(id => {
     const a = assets.find(x => x.id === id); if (!a) return '';
     const pnl = calcPnL(a);
@@ -577,16 +753,12 @@ function renderAssetList(cat) {
 function openAsset(id) {
   currentAsset = assets.find(a => a.id === id);
   if (!currentAsset) return;
-  renderDetail();
-  goTo('detail');
+  renderDetail(); goTo('detail');
 }
-
 function openAssetById(id) {
   currentAsset = assets.find(a => a.id === id);
   if (!currentAsset) return;
-  renderDetail();
-  const prev = document.querySelector('.screen.active');
-  goTo('detail');
+  renderDetail(); goTo('detail');
 }
 
 function renderDetail() {
@@ -652,20 +824,19 @@ function savePosition() {
   const qty = parseFloat(document.getElementById('pos-qty-input').value);
   if (isNaN(buy) || isNaN(qty) || buy <= 0 || qty <= 0) { showToast('Veuillez saisir un prix et une quantité valides'); return; }
   positions[currentAsset.id] = { buy, qty };
-  if (!favorites.has(currentAsset.id)) { favorites.add(currentAsset.id); }
-  updatePnL();
-  renderFavScroll();
-  renderHome();
+  if (!favorites.has(currentAsset.id)) favorites.add(currentAsset.id);
+  updatePnL(); renderFavScroll(); renderHome();
   const favBtn = document.getElementById('fav-toggle-btn');
   favBtn.textContent = '★ Favori'; favBtn.style.color = '#EF9F27';
-  showToast('✓ Position enregistrée — ajouté aux favoris');
+  saveData();
+  showToast('✓ Position enregistrée et sauvegardée');
 }
 
 function toggleFav(id) {
   if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
-  renderFavScroll();
-  renderHome();
+  renderFavScroll(); renderHome();
   if (currentCat) renderAssetList(currentCat);
+  saveData();
   showToast(favorites.has(id) ? '★ Ajouté aux favoris' : 'Retiré des favoris');
 }
 
@@ -717,6 +888,58 @@ function renderFavScreen() {
   }).join('');
 }
 
+/* ========== WIDGET ========== */
+function renderWidget() {
+  const now = new Date();
+  const hm = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  ['wg-clock','wg-time-big'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = hm; });
+  const wd = document.getElementById('wg-date'); if(wd) wd.textContent = cap(dateStr);
+  const wu = document.getElementById('wg-updated'); if(wu && lastUpdated) wu.textContent = fmtTime(lastUpdated);
+
+  const rows = document.getElementById('wg-rows');
+  if (favorites.size === 0) {
+    rows.innerHTML = '<div class="wg-empty">Ajoutez des favoris ★ dans l\'app</div>';
+  } else {
+    rows.innerHTML = [...favorites].map(id => {
+      const a = assets.find(x => x.id === id); if (!a) return '';
+      const pnl = calcPnL(a);
+      return `<div class="wg-row">
+        <div class="wg-row-left">
+          <div class="wg-icon">${a.icon}</div>
+          <div><div class="wg-name">${a.name}</div><div class="wg-cat">${a.cat}</div></div>
+        </div>
+        <div class="wg-right">
+          <div class="wg-price">${a.price !== null ? fmt(a.price, a.cur) : '—'}</div>
+          <div class="wg-chg ${(a.change||0)>=0?'up':'down'}">${fmtChg(a.change)}</div>
+          ${pnl ? `<div class="wg-pl ${pnl.pl>=0?'up':'down'}">${pnl.pl>=0?'+':''}€${pnl.pl.toFixed(0)} (${pnl.perf>=0?'+':''}${pnl.perf.toFixed(1)}%)</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const tot = totalPortfolio();
+  const summary = document.getElementById('wg-summary');
+  if (tot) {
+    summary.innerHTML = `
+      <div class="wg-sum-cell"><div class="wg-sum-lbl">Valeur</div><div class="wg-sum-val">€${tot.cur.toLocaleString('fr-FR',{maximumFractionDigits:0})}</div></div>
+      <div class="wg-sum-cell"><div class="wg-sum-lbl">Investi</div><div class="wg-sum-val">€${tot.cost.toLocaleString('fr-FR',{maximumFractionDigits:0})}</div></div>
+      <div class="wg-sum-cell"><div class="wg-sum-lbl">Perf.</div><div class="wg-sum-val ${tot.perf>=0?'up':'down'}">${tot.perf>=0?'+':''}${tot.perf.toFixed(2)}%</div></div>
+    `;
+  } else {
+    summary.innerHTML = '<div class="wg-empty" style="grid-column:1/-1;padding:12px">Saisissez vos positions pour voir le bilan</div>';
+  }
+}
+
+function tickWidgetClock() {
+  const now = new Date();
+  const hm = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  ['wg-clock','wg-time-big'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = hm; });
+}
+setInterval(tickWidgetClock, 10000);
+
+/* ========== CHART ========== */
 function drawChart(a) {
   const svg = document.getElementById('d-chart');
   let base = a.price || 100;
@@ -731,12 +954,14 @@ function drawChart(a) {
   svg.innerHTML = `<defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.25"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${path} L${x(vals.length-1)} ${H} L${x(0)} ${H} Z" fill="url(#cg)"/><path d="${path}" fill="none" stroke="${col}" stroke-width="2"/>`;
 }
 
+/* ========== ADMIN ========== */
 function renderAdminList() {
-  document.getElementById('adm-list').innerHTML = assets.length === 0 ? '<div style="color:var(--text2);font-size:14px;text-align:center;padding:1rem">Aucun actif configuré</div>' :
-    assets.map(a => `<div class="adm-asset-item">
-      <div><div class="adm-item-name">${a.icon} ${a.name}</div><div class="adm-item-sub">${a.cat} · ${a.api ? '🔗 API' : '✎ Manuel'} · ${a.cur}</div></div>
-      <button class="btn-del" onclick="deleteAsset(${a.id})">Supprimer</button>
-    </div>`).join('');
+  document.getElementById('adm-list').innerHTML = assets.length === 0
+    ? '<div style="color:var(--text2);font-size:14px;text-align:center;padding:1rem">Aucun actif configuré</div>'
+    : assets.map(a => `<div class="adm-asset-item">
+        <div><div class="adm-item-name">${a.icon} ${a.name}</div><div class="adm-item-sub">${a.cat} · ${a.api ? '🔗 API' : '✎ Manuel'} · ${a.cur}</div></div>
+        <button class="btn-del" onclick="deleteAsset(${a.id})">Supprimer</button>
+      </div>`).join('');
 }
 
 function addAsset() {
@@ -747,12 +972,22 @@ function addAsset() {
   const path = document.getElementById('an-path').value.trim();
   const cur = document.getElementById('an-cur').value;
   if (!name || !cat) { showToast('Nom et catégorie requis'); return; }
-  assets.push({ id: nextId++, name, cat, icon, api, path, cur, price: null, change: null });
+  const newAsset = { id: nextId++, name, cat, icon, api, path, cur, price: null, change: null };
+  assets.push(newAsset);
   ['an-name','an-icon','an-api','an-path'].forEach(i => document.getElementById(i).value = '');
   document.getElementById('an-cat').value = '';
-  renderAdminList();
-  renderCatGrid();
-  showToast('✓ ' + name + ' ajouté avec succès');
+  renderAdminList(); renderCatGrid();
+  saveData();
+  if (api) {
+    showToast('⏳ Récupération du cours…');
+    fetchPrice(newAsset).then(() => {
+      renderAdminList(); renderCatGrid(); renderFavScroll();
+      saveData();
+      showToast('✓ ' + name + ' ajouté — cours récupéré');
+    });
+  } else {
+    showToast('✓ ' + name + ' ajouté et sauvegardé');
+  }
 }
 
 function deleteAsset(id) {
@@ -760,20 +995,21 @@ function deleteAsset(id) {
   assets = assets.filter(a => a.id !== id);
   favorites.delete(id);
   delete positions[id];
-  renderAdminList();
-  renderCatGrid();
-  renderFavScroll();
+  renderAdminList(); renderCatGrid(); renderFavScroll();
+  saveData();
 }
 
+/* ========== NAVIGATION ========== */
 function goTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('s-' + screen).classList.add('active');
-  ['home','favs','assets','admin'].forEach(n => { const el = document.getElementById('ni-' + n); if (el) el.classList.remove('active'); });
+  ['home','favs','assets','admin','widget'].forEach(n => { const el = document.getElementById('ni-' + n); if (el) el.classList.remove('active'); });
   const ni = document.getElementById('ni-' + screen);
   if (ni) ni.classList.add('active');
   if (screen === 'home') renderHome();
   if (screen === 'favs') renderFavScreen();
   if (screen === 'admin') renderAdminList();
+  if (screen === 'widget') renderWidget();
 }
 
 function doLogin() {
@@ -799,6 +1035,7 @@ function showToast(msg) {
 }
 
 renderCatGrid();
+
 </script>
 </body>
 </html>
