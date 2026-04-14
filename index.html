@@ -296,12 +296,30 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
       <div class="login-title">InvestTrack</div>
       <div class="login-sub">Votre portefeuille en temps réel</div>
       <div class="login-card">
+        <!-- Toggle connexion / inscription -->
+        <div style="display:flex;background:var(--bg);border-radius:12px;padding:3px;margin-bottom:18px;gap:2px">
+          <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:8px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);color:var(--text)">Se connecter</button>
+          <button id="tab-signup" onclick="switchAuthTab('signup')" style="flex:1;padding:8px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--text2)">Créer un compte</button>
+        </div>
+        <!-- Champ nom (inscription uniquement) -->
+        <div id="field-name" style="display:none">
+          <label>Prénom</label>
+          <input type="text" id="l-name" placeholder="Votre prénom" autocomplete="given-name">
+        </div>
         <label>Adresse e-mail</label>
-        <input type="email" id="l-email" value="admin@investtrack.fr" autocomplete="email">
+        <input type="email" id="l-email" placeholder="vous@email.com" autocomplete="email">
         <label>Mot de passe</label>
-        <input type="password" id="l-pwd" value="admin1234" autocomplete="current-password">
-        <div class="login-err" id="l-err">E-mail ou mot de passe incorrect</div>
-        <button class="btn-login" onclick="doLogin()">Se connecter</button>
+        <input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password">
+        <!-- Confirmation mdp (inscription uniquement) -->
+        <div id="field-confirm" style="display:none">
+          <label>Confirmer le mot de passe</label>
+          <input type="password" id="l-pwd2" placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <div class="login-err" id="l-err"></div>
+        <button class="btn-login" id="btn-auth" onclick="doAuth()">Se connecter</button>
+        <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text2)" id="auth-switch-hint">
+          Pas encore de compte ? <span onclick="switchAuthTab('signup')" style="color:var(--blue);cursor:pointer;font-weight:600">Créer un compte</span>
+        </div>
       </div>
     </div>
 
@@ -315,7 +333,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
           Actualiser
         </button>
         <button class="btn-sm" onclick="goTo('admin')">+ Ajouter</button>
+        <button class="btn-sm" style="color:var(--text2)" onclick="doLogout()" title="Se déconnecter">⏻</button>
       </div>
+      <div style="padding:2px 16px 0;font-size:13px;color:var(--text2)" id="home-greeting"></div>
       <div class="last-updated" id="last-updated-home"></div>
       <div class="hero" id="hero">
         <div class="hero-lbl">Valeur totale du portefeuille</div>
@@ -513,7 +533,139 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
 </div>
 
 <script>
-const USERS = { 'admin@investtrack.fr': 'admin1234', 'user@test.fr': 'test1234' };
+/* ========== AUTHENTIFICATION ========== */
+const ADMIN_EMAIL = 'admin@investtrack.fr';
+
+function getAccounts() {
+  try { return JSON.parse(localStorage.getItem('it_accounts') || '{}'); } catch(e) { return {}; }
+}
+function saveAccounts(accounts) {
+  try { localStorage.setItem('it_accounts', JSON.stringify(accounts)); } catch(e) {}
+}
+
+function initAccounts() {
+  const accounts = getAccounts();
+  if (!accounts[ADMIN_EMAIL]) {
+    accounts[ADMIN_EMAIL] = { pwd: 'admin1234', name: 'Admin', isAdmin: true };
+    saveAccounts(accounts);
+  }
+}
+
+let currentUser = null;
+let authMode = 'login';
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  const isSignup = mode === 'signup';
+  document.getElementById('tab-login').style.cssText = isSignup
+    ? 'flex:1;padding:8px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--text2)'
+    : 'flex:1;padding:8px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);color:var(--text)';
+  document.getElementById('tab-signup').style.cssText = isSignup
+    ? 'flex:1;padding:8px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);color:var(--text)'
+    : 'flex:1;padding:8px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--text2)';
+  document.getElementById('field-name').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('field-confirm').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('btn-auth').textContent = isSignup ? 'Créer mon compte' : 'Se connecter';
+  document.getElementById('l-err').style.display = 'none';
+  document.getElementById('auth-switch-hint').innerHTML = isSignup
+    ? 'Déjà un compte ? <span onclick="switchAuthTab(\'login\')" style="color:var(--blue);cursor:pointer;font-weight:600">Se connecter</span>'
+    : 'Pas encore de compte ? <span onclick="switchAuthTab(\'signup\')" style="color:var(--blue);cursor:pointer;font-weight:600">Créer un compte</span>';
+}
+
+function showAuthErr(msg) {
+  const el = document.getElementById('l-err');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function doAuth() {
+  const email = document.getElementById('l-email').value.trim().toLowerCase();
+  const pwd = document.getElementById('l-pwd').value;
+  if (!email || !pwd) { showAuthErr('Veuillez remplir tous les champs.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthErr('Adresse e-mail invalide.'); return; }
+
+  const accounts = getAccounts();
+
+  if (authMode === 'login') {
+    if (!accounts[email]) { showAuthErr('Aucun compte avec cet e-mail. Créez un compte.'); return; }
+    if (accounts[email].pwd !== pwd) { showAuthErr('Mot de passe incorrect.'); return; }
+    loginSuccess(email, accounts[email]);
+  } else {
+    const name = document.getElementById('l-name').value.trim();
+    const pwd2 = document.getElementById('l-pwd2').value;
+    if (!name) { showAuthErr('Veuillez saisir votre prénom.'); return; }
+    if (pwd.length < 6) { showAuthErr('Le mot de passe doit contenir au moins 6 caractères.'); return; }
+    if (pwd !== pwd2) { showAuthErr('Les mots de passe ne correspondent pas.'); return; }
+    if (accounts[email]) { showAuthErr('Un compte existe déjà avec cet e-mail.'); return; }
+    accounts[email] = { pwd, name, isAdmin: false };
+    saveAccounts(accounts);
+    loginSuccess(email, accounts[email]);
+  }
+}
+
+function loginSuccess(email, account) {
+  currentUser = { email, name: account.name, isAdmin: account.isAdmin };
+  document.getElementById('l-err').style.display = 'none';
+  loadUserData(email);
+  document.getElementById('navbar').classList.add('visible');
+  const adminNav = document.getElementById('ni-admin');
+  if (adminNav) adminNav.style.display = currentUser.isAdmin ? '' : 'none';
+  renderHome();
+  goTo('home');
+  loadPrices();
+}
+
+function doLogout() {
+  saveData();
+  currentUser = null;
+  assets = JSON.parse(JSON.stringify(DEFAULT_ASSETS));
+  favorites = new Set([1,5]);
+  positions = { 1:{buy:1850,qty:0.5}, 5:{buy:62000,qty:0.1} };
+  lastUpdated = null;
+  document.getElementById('navbar').classList.remove('visible');
+  document.getElementById('l-email').value = '';
+  document.getElementById('l-pwd').value = '';
+  switchAuthTab('login');
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-login').classList.add('active');
+}
+
+/* ========== DONNÉES PAR UTILISATEUR ========== */
+function userKey(suffix) {
+  return 'it_' + (currentUser ? currentUser.email.replace(/[^a-z0-9]/g,'_') : 'anon') + '_' + suffix;
+}
+
+function saveData() {
+  if (!currentUser) return;
+  try {
+    localStorage.setItem(userKey('assets'), JSON.stringify(assets));
+    localStorage.setItem(userKey('favorites'), JSON.stringify([...favorites]));
+    localStorage.setItem(userKey('positions'), JSON.stringify(positions));
+    localStorage.setItem(userKey('nextId'), String(nextId));
+    localStorage.setItem(userKey('lastUpdated'), lastUpdated ? lastUpdated.toISOString() : '');
+  } catch(e) {}
+}
+
+function loadUserData(email) {
+  const key = k => 'it_' + email.replace(/[^a-z0-9]/g,'_') + '_' + k;
+  try {
+    const a = localStorage.getItem(key('assets'));
+    const f = localStorage.getItem(key('favorites'));
+    const p = localStorage.getItem(key('positions'));
+    const n = localStorage.getItem(key('nextId'));
+    const lu = localStorage.getItem(key('lastUpdated'));
+    assets = a ? JSON.parse(a) : JSON.parse(JSON.stringify(DEFAULT_ASSETS));
+    favorites = f ? new Set(JSON.parse(f)) : new Set([1,5]);
+    positions = p ? JSON.parse(p) : { 1:{buy:1850,qty:0.5}, 5:{buy:62000,qty:0.1} };
+    nextId = n ? parseInt(n) || 20 : 20;
+    lastUpdated = lu ? new Date(lu) : null;
+  } catch(e) {
+    assets = JSON.parse(JSON.stringify(DEFAULT_ASSETS));
+    favorites = new Set([1,5]);
+    positions = { 1:{buy:1850,qty:0.5}, 5:{buy:62000,qty:0.1} };
+  }
+}
+
+initAccounts();
 const CAT_META = {
   'Métaux': { icon: '🥇', color: '#EF9F27' },
   'Crypto': { icon: '₿', color: '#185FA5' },
@@ -537,30 +689,6 @@ const DEFAULT_ASSETS = [
 ];
 
 /* ========== PERSISTANCE localStorage ========== */
-function saveData() {
-  try {
-    localStorage.setItem('it_assets', JSON.stringify(assets));
-    localStorage.setItem('it_favorites', JSON.stringify([...favorites]));
-    localStorage.setItem('it_positions', JSON.stringify(positions));
-    localStorage.setItem('it_nextId', String(nextId));
-    localStorage.setItem('it_lastUpdated', lastUpdated ? lastUpdated.toISOString() : '');
-  } catch(e) {}
-}
-
-function loadData() {
-  try {
-    const a = localStorage.getItem('it_assets');
-    const f = localStorage.getItem('it_favorites');
-    const p = localStorage.getItem('it_positions');
-    const n = localStorage.getItem('it_nextId');
-    const lu = localStorage.getItem('it_lastUpdated');
-    if (a) assets = JSON.parse(a);
-    if (f) favorites = new Set(JSON.parse(f));
-    if (p) positions = JSON.parse(p);
-    if (n) nextId = parseInt(n) || 20;
-    if (lu) lastUpdated = lu ? new Date(lu) : null;
-  } catch(e) {}
-}
 
 /* ========== STATE ========== */
 let assets = JSON.parse(JSON.stringify(DEFAULT_ASSETS));
@@ -572,8 +700,6 @@ let lastCat = null;
 let nextId = 20;
 let isRefreshing = false;
 let lastUpdated = null;
-
-loadData();
 
 /* ========== UTILS ========== */
 function getPath(obj, path) {
@@ -674,6 +800,8 @@ async function wgRefresh() {
 
 /* ========== RENDER HOME ========== */
 function renderHome() {
+  const greeting = document.getElementById('home-greeting');
+  if (greeting && currentUser) greeting.textContent = 'Bonjour ' + currentUser.name + ' 👋';
   const tot = totalPortfolio();
   if (tot) {
     document.getElementById('h-total').textContent = '€' + tot.cur.toLocaleString('fr-FR', { maximumFractionDigits: 0 });
@@ -1012,19 +1140,7 @@ function goTo(screen) {
   if (screen === 'widget') renderWidget();
 }
 
-function doLogin() {
-  const e = document.getElementById('l-email').value.trim();
-  const p = document.getElementById('l-pwd').value;
-  if (USERS[e] && USERS[e] === p) {
-    document.getElementById('l-err').style.display = 'none';
-    document.getElementById('navbar').classList.add('visible');
-    renderHome();
-    goTo('home');
-    loadPrices();
-  } else {
-    document.getElementById('l-err').style.display = 'block';
-  }
-}
+function doLogin() { doAuth(); }
 
 let toastTimer;
 function showToast(msg) {
@@ -1035,6 +1151,7 @@ function showToast(msg) {
 }
 
 renderCatGrid();
+switchAuthTab('login');
 
 </script>
 </body>
